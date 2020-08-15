@@ -1,3 +1,5 @@
+import ClassicEditor from 'lib/ckeditor5/ckeditor.js'
+
 ClassicEditor
     .create(document.querySelector('#editor'), {
       toolbar: [ 'heading', '|', 'alignment', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
