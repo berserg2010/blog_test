@@ -1,0 +1,132 @@
+{% extends './_base.html' %}
+
+{% load static %}
+
+{% block title %}Добавить статью{% endblock %}
+
+{% block content %}
+<section class="article-form">
+  <h1>Добавить статью</h1>
+
+  <form
+    id="art-form"
+    action="{% url 'blog:new_article' %}"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+
+    <div class="article-form__wrapper_left">
+      <div class="article-form__title_input title_input">
+        <label class="visually-hidden" for="title">Введите название статьи</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          maxlength="64"
+          placeholder="Введите название статьи"
+          autocomplete="off"
+          autofocus
+          required
+        >
+      </div>
+
+      <div class="content_input">
+        <label class="visually-hidden" for="editor">Введите текст статьи</label>
+        <div id="toolbar-container"></div>
+        <textarea id="editor" name="content"></textarea>
+      </div>
+    </div>
+
+    <div class="article-form__wrapper_right">
+      <button class="article-form__submit"
+        type="submit"
+      >
+        Опубликовать
+      </button>
+
+      <div class="file_input">
+        <label for="input_file">Загрузить изображение</label>
+
+        <div class="image_container__wrapper" hidden>
+          <div class="close_image"></div>
+          <img id="image_container" width="280px" src="#" alt="Загруженное изображение" />
+        </div>
+
+        <div id="button_upload" class="link-button link-button--div">Файл</div>
+
+        <input
+          type="file"
+          id="input_file"
+          name="image"
+          autocomplete="off"
+          accept="image/png, image/jpeg, image/gif"
+          required
+          hidden
+        >
+      </div>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'lib/ckeditor5/ckeditor.js' %}"></script>
+
+<script>
+
+  ClassicEditor
+    .create(document.querySelector('#editor'), {
+      toolbar: [ 'heading', '|', 'alignment', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+      heading: {
+        options: [
+          { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+          { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+          { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+        ]
+      }
+    })
+    .then((editor) => {
+      const toolbarContainer = document.querySelector('#toolbar-container')
+      toolbarContainer.appendChild(editor.ui.view.toolbar.element)
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+
+  const button_upload = document.getElementById('button_upload')
+  const input_file = document.getElementById('input_file')
+  const image_container = document.getElementById('image_container')
+  const image_wrapper = document.getElementsByClassName('image_container__wrapper')[0]
+  const close_image = document.getElementsByClassName('close_image')[0]
+
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        image_container.src = e.target.result
+        showImageWrapper(true)
+      }
+      reader.readAsDataURL(input.files[0])
+    }
+  }
+
+  let showImageWrapper = (state) => {
+    button_upload.hidden = state
+    image_wrapper.hidden = !state
+  }
+
+  button_upload.onclick = function() {
+    input_file.click()
+  }
+
+  input_file.oninput = function() {
+    readURL(this)
+  }
+
+  close_image.onclick = function() {
+    showImageWrapper(false)
+  }
+
+</script>
+{% endblock %}

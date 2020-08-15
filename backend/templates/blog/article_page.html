@@ -1,0 +1,28 @@
+{% extends './_base.html' %}
+
+{% load static %}
+
+{% block style %}
+<style>
+  body {
+    background-color: rgb(238, 238, 238);
+  }
+</style>
+{% endblock %}
+
+{% block title %}Страница со татьей{% endblock %}
+
+{% block content %}
+<section class="article-page">
+  <h1 class="visually-hidden">Страница со статьей</h1>
+
+  <h2>{{ article.title|safe }}</h2>
+
+  <div class="article-page__image_wrapper">
+    <img src="{{ article.image.url }}" width="607px" alt="Изображение для статьи">
+  </div>
+  <div class="article-page__text">
+    {{ article.content|safe }}
+  </div>
+</section>
+{% endblock %}

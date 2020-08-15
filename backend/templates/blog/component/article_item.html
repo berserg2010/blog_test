@@ -1,0 +1,11 @@
+{% load static %}
+<article class="article-item">
+
+  <p>{{ article.created }}</p>
+
+  <img src="{{ article.image.url }}" width="217px" alt="Изображение для статьи" />
+
+  <h3>
+    {{ article.title }}
+  </h3>
+</article>

@@ -1,0 +1,17 @@
+{% load static %}
+<section class="preview">
+  <article class="preview_wrapper">
+    <div class="preview_wrapper_left">
+      <span>NEW</span>
+
+      <p class="article-preview__title">{{ article.title }}</p>
+
+      <p class="article-preview__description">{{ article.content|truncatewords_html:32|safe }}</p>
+
+      <a class="link-button" href="{% url 'blog:detail_article' article.id %}">Читать</a>
+    </div>
+    <div class="preview__image_wrapper">
+      <img src="{{ article.image.url }}" width="464px" alt="Изображение для статьи"/>
+    </div>
+  </article>
+</section>

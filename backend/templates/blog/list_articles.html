@@ -1,0 +1,33 @@
+{% extends './_base.html' %}
+
+{% load static %}
+
+{% block title %}Список статей{% endblock %}
+
+{% block preview %}
+  {% if list_articles %}
+    {% include './component/article_preview.html' with article=list_articles|first %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<h1 class="visually-hidden">Список статей</h1>
+
+<section class="list_articles">
+
+  <h2>Другие статьи</h2>
+
+  {% if list_articles %}
+  <ul>
+    {% for article in list_articles %}
+    <li class="list_articles__article-item">
+      <a href="{% url 'blog:detail_article' article.id %}">
+        {% include './component/article_item.html' with article=article %}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+</section>
+{% endblock %}
