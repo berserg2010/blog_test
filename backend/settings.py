@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'dev')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'http://localhost',
