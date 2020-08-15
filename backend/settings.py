@@ -4,12 +4,14 @@ import django_heroku
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'dev')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'dev')
 
-DEBUG = os.getenv('DEBUG', False)
+DEBUG = False
 
 ALLOWED_HOSTS = [
+    'http://localhost',
     '127.0.0.1',
+    '0.0.0.0',
     'https://my-blog-python.herokuapp.com',
 ]
 
@@ -27,6 +29,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,14 +64,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'HOST': os.environ.get('POSTGRES_HOST', 'db'),
-    #     'PORT': 5432,
-    #     'NAME': os.environ.get('POSTGRES_DB', 'postgres'),
-    #     'USER': os.environ.get('POSTGRES_USER', 'postgres'),
-    #     'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
-    # }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -101,6 +96,8 @@ STATICFILES_DIRS = [
 ]
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-django_heroku.settings(locals())
+django_heroku.settings(locals(), allowed_hosts=False)
