@@ -1,7 +1,7 @@
 from django.urls import path
 
-
 from .views import index, new_article, detail_article
+
 
 app_name = 'blog'
 

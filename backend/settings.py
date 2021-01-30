@@ -1,20 +1,33 @@
+from corsheaders.defaults import default_headers
+import django_heroku
+from decouple import config
 import os
 from pathlib import Path
-import django_heroku
+
+from django.contrib import admin
+from django.core.management import utils
+
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'dev')
+SECRET_KEY = config('SECRET_KEY', default=utils.get_random_secret_key())
 
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    'http://localhost',
+    'localhost',
     '127.0.0.1',
     '0.0.0.0',
-    'https://my-blog-python.herokuapp.com',
+    '*',
 ]
 
+# Corsheaders
+CORS_ALLOW_HEADERS = default_headers + (
+    'contenttype',
+)
+CORS_ORIGIN_WHITELIST = [
+    f'http://{config("HOST_NAME")}',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,12 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'blog',
+    'corsheaders',
+    'django_cleanup.apps.CleanupConfig',
+
+    'blog.apps.BlogConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -58,7 +77,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -82,22 +100,20 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'ru-ru'
-
 TIME_ZONE = 'Europe/Moscow'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static/'),
+)
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+admin.AdminSite.site_header = config('PROJECT_NAME', default='project').upper()
+admin.AdminSite.empty_value_display = '--'
 
 django_heroku.settings(locals())
